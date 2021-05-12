@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Hell of Magic Academy</title>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js"></script>
+    <script src="../firebaseInx.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+</head>
+<body>
+    <div id="content">
+        <h1 id="top_text">The Hell of Magic Academy</h1>
+        <canvas id="chart" width="400px" height="300px"></canvas>
+        <input type="number" class="form__input" id="score">
+        <button class="button b-orange" id="Gryffindor" onclick="update_score(0)">Gryffindor</button>
+        <button class="button b-green" id="Slytherin" onclick="update_score(1)">Slytherin</button>
+        <button class="button b-blue" id="Ravenclaw" onclick="update_score(2)">Ravenclaw</button>
+        <button class="button b-yellow" id="Hufflepuff" onclick="update_score(3)">Hufflepuff</button>
+        
+    </div>
+
+    <script>
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (!user) {
+                btnGooglePopup();
+            }
+        });
+        var provider = new firebase.auth.GoogleAuthProvider();
+
+        function btnGooglePopup() {
+            firebase.auth().signInWithPopup(provider).then(function(result) {
+                // 可以獲得 Google 提供 token，token可透過 Google API 獲得其他數據。  
+                var token = result.credential.accessToken;
+                var user = result.user;
+                console.log(token);
+                console.log(user);
+                location.reload();
+            });  
+        }
+        
+    </script>
+    
+    <script src="chart.js"></script>
+</body>
+</html>
+
+<style>
+*{
+    font-family: 'Creepster', cursive;
+    color: #aaa;
+}
+body{
+    background-color: #000;
+}
+#content{
+    margin: auto;
+}
+#top_text{
+    text-align: center;
+}
+@media only screen and (max-width: 640px) {
+    #content{
+        width: 100%;
+    }
+}
+@media only screen and (min-width: 640px) {
+    #content{
+        width: 640px;
+    }
+}
+
+.b-green, .b-green:before {
+    background: rgba(73,155,234,1);
+    background: -moz-linear-gradient(45deg, rgb(8, 104, 32) 0%, rgb(8, 104, 32) 100%);
+    background: -webkit-linear-gradient(45deg, rgb(8, 104, 32) 0%, rgb(8, 104, 32) 100%);
+    background: -o-linear-gradient(45deg, rgb(8, 104, 32) 0%, rgb(8, 104, 32) 100%);
+    background: -ms-linear-gradient(45deg, rgb(8, 104, 32) 0%, rgb(8, 104, 32) 100%);
+    background: linear-gradient(45deg, rgb(8, 104, 32) 0%, rgb(8, 104, 32) 100%);
+}
+.b-orange, .b-orange:before {
+    background: rgba(255,193,7,1);
+    background: -moz-linear-gradient(45deg, rgba(255,87,34,1) 0%, rgba(255,87,34,1) 100%);
+    background: -webkit-linear-gradient(45deg, rgba(255,87,34,1)0%, rgba(255,87,34,1) 100%);
+    background: -o-linear-gradient(45deg, rgba(255,87,34,1)0%, rgba(255,87,34,1) 100%);
+    background: -ms-linear-gradient(45deg, rgba(255,87,34,1)0%, rgba(255,87,34,1) 100%);
+    background: linear-gradient(45deg, rgba(255,87,34,1)0%, rgba(255,87,34,1) 100%);
+}
+/*BLUE*/
+.b-blue, .b-blue:before {
+    background: rgb(0, 57, 126);
+    background: -moz-linear-gradient(45deg, rgb(0, 57, 126) 0%, rgb(0, 57, 126) 100%);
+    background: -webkit-linear-gradient(45deg, rgb(0, 57, 126) 0%, rgb(0, 57, 126) 100%);
+    background: -o-linear-gradient(45deg, rgb(0, 57, 126) 0%, rgb(0, 57, 126) 100%);
+    background: -ms-linear-gradient(45deg, rgb(0, 57, 126) 0%, rgb(0, 57, 126) 100%);
+    background: linear-gradient(45deg, rgb(0, 57, 126) 0%, rgb(0, 57, 126) 100%);
+}
+.b-yellow, .b-yellow:before {
+    background: rgba(255,193,7,1);
+    background: -moz-linear-gradient(45deg, rgb(199, 109, 49) 0%, rgb(199, 109, 49) 100%);
+    background: -webkit-linear-gradient(45deg, rgb(199, 109, 49) 0%, rgb(199, 109, 49) 100%);
+    background: -o-linear-gradient(45deg, rgb(199, 109, 49) 0%, rgb(199, 109, 49) 100%);
+    background: -ms-linear-gradient(45deg, rgb(199, 109, 49) 0%, rgb(199, 109, 49) 100%);
+    background: linear-gradient(45deg, rgb(199, 109, 49) 0%, rgb(199, 109, 49) 100%);
+}
+
+
+.button {
+  display: inline-block;
+  position: relative;
+  border-radius: 3px;
+  text-decoration: none;
+  width: 40%;
+  padding: .5em;
+  margin: .5em;
+  font-size: 2em;
+  font-weight: bold;
+  transition: all .5s;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.button:hover {
+  text-shadow: 0px 0px 0px rgba(255, 255, 255, .75);
+}
+.button:focus {
+  text-shadow: 0px 0px 0px rgba(255, 255, 255, .75);
+}
+.button:hover:after {
+  left: 100%;
+  top: 100%;
+  bottom: 100%;
+  right: 100%;
+}
+.button:before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  border-radius: 5px;
+  transition: all .5s;
+}
+.button:after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  bottom: 2px;
+  right: 2px;
+  z-index: -1;
+  border-radius: 5px;
+  transition: all .5s;
+}
+.form__input {
+  color: #FFF;
+  font-size: 1.2rem;
+  margin: 1em;
+  padding: 1.5rem 2rem;
+  border-radius: 0.2rem;
+  background-color: #FFF3;
+  border: none;
+  width: 75%;
+  display: block;
+  border-bottom: 0.3rem solid transparent;
+  transition: all 0.3s;
+}
+</style>
