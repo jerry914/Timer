@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="img/Ellipse 0.png">
+    <title>Timer | Home</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js"></script>
+    <script src="firebaseInx.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+</head>
+<body>
+    <canvas id="chart" width="400px" height="600px"></canvas>
+    <script>
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (!user) {
+                window.location.href = "index.html";
+            }
+        });
+        var db = firebase.firestore();
+        var ref = db.collection("collecter");
+        var collecterName = [];
+        var collecterValue = new Array(collecterName.length);
+        ref.get().then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                collecterName.push(doc.id);
+            });
+            getData();
+        });
+
+        function getData(){
+            let colData = new Array(collecterName.length);
+
+            // let now = new Date();
+            // let mouthDate = new Date(getLastMonthTime(now));
+            
+            var weekDate = new Date();
+            weekDate.setDate(weekDate.getDate() - 7);
+
+            for(let i=0;i<collecterName.length;i++){
+                db.collection("collecter").doc(collecterName[i]).collection("timeStamp").where('checkIn', '>=', weekDate)
+                .get()
+                .then(function(querySnapshot) {
+                    collecterValue[i]=0;
+                    querySnapshot.forEach(function(doc) {
+                        collecterValue[i]+=parseInt(doc.data().passTime);
+                    });
+                    if(i==collecterName.length-1){
+                        makeChart();
+                    }
+                })
+                .catch(function(error) {
+                    console.log("Error getting documents: ", error);
+                });
+                
+            }
+        }
+        function makeChart(){
+            var ctx = document.getElementById('chart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: collecterName,
+                    datasets: [{
+                        label: '本週時間分配狀況',
+                        data: collecterValue,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                }
+            });
+        }
+        
+        function getLastMonthTime(date){
+            var daysInMonth = [0,31,28,31,30,31,30,31,31,30,31,30,31];
+            var strYear = date.getFullYear();
+            var strDay = date.getDate();
+            var strMonth = date.getMonth()+1;
+            if (((strYear % 4) === 0) && ((strYear % 100)!==0) || ((strYear % 400)===0)){
+                daysInMonth[2] = 29;
+            }
+            if(strMonth - 1 === 0) //二、解决跨年问题
+            {
+                strYear -= 1;
+                strMonth = 12;
+            }
+            else
+            {
+                strMonth -= 1;
+            }
+            strDay = Math.min(strDay,daysInMonth[strMonth]);//三、前一个月日期不一定和今天同一号，例如3.31的前一个月日期是2.28；9.30前一个月日期是8.30
+        
+            if(strMonth<10)//给个位数的月、日补零
+            {
+                strMonth="0"+strMonth;
+            }
+            if(strDay<10)
+            {
+                strDay="0"+strDay;
+            }
+            var datastr = strYear+"-"+strMonth+"-"+strDay;
+            return datastr;
+        }
+        
+        function handleOrientation(event) {
+            var x = event.beta;  // In degree in the range [-180,180]
+            var y = event.gamma; // In degree in the range [-90,90]
+
+            // Because we don't want to have the device upside down
+            // We constrain the x value to the range [-90,90]
+            if (x >  90) { x =  90};
+            if (x < -90) { x = -90};
+
+
+            if(y<-55){
+                backHome();
+            }
+        }
+
+        window.addEventListener('deviceorientation', handleOrientation);
+
+        function backHome(){
+            window.location.href = "home.html";
+        }
+    </script>
+</body>
+</html>
+<style> 
+body { 
+    height: 100%;
+    width: 100%;
+    margin: auto;
+} 
+
+</style>

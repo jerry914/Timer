@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="img/Ellipse 0.png">
+    <title>Timer | SignIn</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+    <script src="firebaseInx.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="ellipse1 ellipse"></div>
+        <div class="ellipse2 ellipse"></div>
+        <div class="ellipse3 ellipse"></div>
+        <div class="ellipse4 ellipse"></div>
+    </div>
+    <div class="inputContainer">
+        <label for="fname" class="labelText">email</label>
+        <input type="text" id="temail" name="email" class="signInput"><br><br>
+        <label for="lname" class="labelText">password</label>
+        <input type="password" id="tpassword" name="password" class="signInput"><br><br>
+        <div onclick="signin()" class="signBtn">Sign In</div>
+        <div class="signContector">or</div>
+        <div onclick="signup()" class="signBtn">Sign Up</div>
+    </div>
+    
+    <script>
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                window.location.href = "home.html";
+            }
+        });
+        function signin(){
+            let email = document.getElementById("temail").value;
+            let password = document.getElementById("tpassword").value;
+            firebase.auth().signInWithEmailAndPassword(email, password).catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            }).then(()=>{
+                window.location.href = "home.html";
+            });
+        }
+        function signup(){
+            let email = document.getElementById("temail").value;
+            let password = document.getElementById("tpassword").value;
+            firebase.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            }).then(()=>{
+                cwindow.location.href = "home.html";
+            });
+        }
+
+        
+    </script>
+
+</body>
+</html>
+
+<style>
+
+.inputContainer{
+    position: absolute;
+    margin-left: 10%;
+    top: 470px;
+    width: 80%;
+    height: 400px;
+}
+.labelText{
+    font-size: 20px;
+    line-height: 33px;
+    text-align: right;
+    position: absolute;
+    width: 100px;
+}
+.signInput{
+    position: relative;
+    left: 120px;
+    top: -10px;
+    width: 409px;
+    height: 49px;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 6px #FFFFFF45;
+    border: 1px solid #707070;
+    border-radius: 25px;
+    margin-bottom: 33px;
+    padding-left: 20px;
+}
+.signBtn{
+    text-align: center;
+    font-size: 36px;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    text-shadow: 0px 3px 6px #FFFFFFA5;
+    cursor: pointer;
+    transition: 0.6s;
+    margin: 5px;
+    border-radius: 10px;
+    padding: 5px 0 5px 0;
+    line-height: 36px;
+}
+.signContector{
+    text-align: center;
+    font-size: 30px;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+}
+.signBtn:hover{
+    font-size: 43px;
+    border: #fff 1px solid;
+    line-height: 43px;
+}
+.ellipse{
+    position: relative;
+}
+.ellipse1{
+    top: 25px;
+    left: 25px;
+    width: 297px;
+    height: 293px;
+    background: transparent url('img/Ellipse 3.png') 0% 0% no-repeat padding-box;
+    background-size: cover;
+    animation: ellipsemoveleft 0.4s;
+    animation-timing-function: ease-out;
+}
+.ellipse2{
+    top: -50px;
+    left: 500px;
+    width: 176px;
+    height: 174px;
+    background: transparent url('img/Ellipse 2.png') 0% 0% no-repeat padding-box;
+    background-size: cover;
+    animation: ellipsemoveright1 0.7s;
+    animation-timing-function: ease-out;
+}
+.ellipse3{
+    top: 350px;
+    left: 25px;
+    width: 232px;
+    height: 230px;
+    background: transparent url('img/Ellipse 1.png') 0% 0% no-repeat padding-box;
+    background-size: cover;
+    animation: ellipsemoveleft 1.3s;
+    animation-timing-function: ease-out;
+}
+.ellipse4{
+    top: 310px;
+    left: 230px;
+    width: 465px;
+    height: 461px;
+    background: transparent url('img/Ellipse 0.png') 0% 0% no-repeat padding-box;
+    background-size: cover;
+    animation-timing-function: ease-out;
+    animation: ellipsemoveright2 1.5s;
+}
+@keyframes ellipsemoveleft {
+  from {left: 0px;}
+  to {left: 25px;}
+}
+@keyframes ellipsemoveright1 {
+  from {left: 630px;top: 240px}
+  to {left: 500px;}
+}
+@keyframes ellipsemoveright2 {
+  from {left: 300px;top: 1120px}
+  to {left: 230px;}
+}
+</style>

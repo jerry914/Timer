@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="img/Ellipse 0.png">
+    <title>Timer | Home</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js"></script>
+    <script src="firebaseInx.js"></script>
+    <script language="javascript" type="text/javascript" src="P5/p5.min.js"></script>
+    <script language="javascript" type="text/javascript" src="P5/colorKnobs.js"></script>
+</head>
+<body>
+    <div onclick="changePath()" class="checkBtn" style="top: 70%">START</div>
+    <div onclick="goChart()" class="checkBtn" style="top:80%">chart</div>
+    <script>
+        function goChart(){
+            window.location.href = "chart.html";
+        }
+        window.addEventListener('deviceorientation', handleOrientation);
+    </script>
+</body>
+</html>
+<style> 
+body { 
+    height: 100%;
+    width: 100%;
+    margin: auto;
+} 
+</style>

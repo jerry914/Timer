@@ -1,0 +1,27 @@
+html{
+    font-family: monospace;
+    color: #fff;
+    width: 100%;
+    height: 100%;
+    
+}
+body{
+    background-color: #3c3c3c;
+    overflow: hidden;
+}
+.container{
+    height: 100%;
+    width: 740px;
+    margin: auto;
+}
+.checkBtn{
+    font-size: 30px;
+    position: relative;
+    top: 50%;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.4s;
+}
+.checkBtn:hover{
+    font-size: 35px;
+}

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="img/Ellipse 0.png">
+    <title>Timer | Check</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js"></script>
+    <script src="firebaseInx.js"></script>
+</head>
+<body>
+    <div id="checkStatus"></div>
+    <h1 id="checkType"></h1>
+    <div onclick="checkIn()" class="checkBtn">Check In</div>
+    <div onclick="checkOut()" class="checkBtn">Check Out</div>
+    <br><br>
+    <div onclick="backHome()" class="checkBtn"> BACK </div>
+    <script>
+        let urlParams = new URLSearchParams(window.location.search);
+        let ctype = urlParams.get('type');
+        document.getElementById("checkType").textContent = ctype;
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (!user) {
+                window.location.href = "index.html";
+            }
+        });
+        var db = firebase.firestore();
+        var checkInTime,checkOutTime;
+
+        var refStatus = db.collection("status").doc("status");
+        refStatus.get().then((statusData) => {
+            let sdata = statusData.data();
+            if(sdata.checkInStatus){
+                checkStatus = true;
+                checkInTime = sdata.checkInTime;
+                ctype = sdata.checkType;
+                document.getElementById("checkType").textContent = ctype;
+                document.getElementById("checkStatus").innerHTML = '<h1 class="statusText">Check In '+sdata.checkInTime.getHours()+":"+sdata.checkInTime.getMinutes()+"</h1>"
+            }
+        });
+
+        var checkStatus = false;
+        function checkIn(){
+            checkStatus = true;
+            checkInTime = new Date();
+            refStatus.update({
+                checkInStatus: true,
+                checkType: ctype,
+                checkInTime: checkInTime
+                }).then(() => {
+                    document.getElementById("checkStatus").innerHTML = '<h1 class="statusText">Check In '+checkInTime.getHours()+":"+checkInTime.getMinutes()+"</h1>"
+            });
+        }
+        function checkOut(){
+            checkStatus = false;
+            checkOutTime = new Date();
+            let passTime = Math.floor((checkOutTime - checkInTime)/1000/60);
+            // let passMin = passTime % 60;
+            // let passHour = Math.floor(passTime / 60);
+            var ref = db.collection("collecter").doc(ctype).collection("timeStamp");
+            ref.add({
+                checkIn: checkInTime,
+                checkOut: checkOutTime,
+                passTime: passTime
+                }).then(() => {
+                document.getElementById("checkStatus").innerHTML = '<h1 class="statusText">passed '+passTime+'minutes</h1>';
+            });
+            refStatus.update({
+                checkInStatus: false
+            });
+        }
+        function backHome(){
+            if(checkStatus){
+                checkOut();
+                backHome();
+            }
+            else{
+                window.location.href = "home.html";
+            }
+        }
+    </script>
+</body>
+</html>
+<style> 
+body { 
+    height: 100%;
+    width: 100%;
+    margin: auto;
+} 
+.statusText{
+    margin-top: 20%;
+    text-align: center;
+    position: absolute;
+    top: 30%;
+    width: 100%;
+    font-size: 45px;
+}
+</style>
